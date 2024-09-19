@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groupie-Tracker: Your Live Music Experience</title>
+<link rel="icon" href="/static/groupie-tracker-favicon-color.png" type="image/x-icon">
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary-color: #00FFFF;
+    --secondary-color: #FF1493;
+    --tertiary-color: #FF4500;
+    --bg-color: #0A0A2A;
+    --text-color: #FFFFFF;
+    --card-bg: #1A1A3A;
+    --button-bg: #2A2A4A;
+  }
+  
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    color: var(--text-color);
+    line-height: 1.6;
+    background-color: var(--bg-color);
+    overflow-x: hidden;
+  }
+  
+  .header {
+    background-color: rgba(10, 10, 42, 0.8);
+    padding: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,255,255,0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo-image {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+  }
+  
+  .logo-text {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 2.5em;
+    color: var(--primary-color);
+    text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color), 0 0 30px var(--primary-color);
+    animation: neonPulse 1.5s ease-in-out infinite alternate;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  @keyframes neonPulse {
+    from {
+      text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color), 0 0 30px var(--primary-color);
+    }
+    to {
+      text-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color), 0 0 15px var(--primary-color);
+    }
+  }
+  
+  .nav {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+  }
+  
+  .nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    margin: 0 20px;
+    font-size: 1.1em;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  
+  .nav a::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--secondary-color);
+    visibility: hidden;
+    transform: scaleX(0);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .nav a:hover::before {
+    visibility: visible;
+    transform: scaleX(1);
+  }
+  
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  
+  .search-container {
+    text-align: center;
+    margin: 40px 0;
+    position: relative;
+  }
+  
+  #search-input {
+    width: 70%;
+    padding: 15px 20px;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 30px;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+  }
+  
+  #search-input:focus {
+    outline: none;
+    box-shadow: 0 0 15px var(--primary-color);
+  }
+  
+  #search-button {
+    position: absolute;
+    right: 15%;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+  }
+  
+  #search-button:hover {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 0 10px var(--primary-color);
+  }
+  
+  .featured-bands {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 60px;
+  }
+  
+  .band-card {
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  
+  .band-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg 80deg,
+      var(--secondary-color) 80deg 100deg,
+      transparent 100deg 180deg,
+      var(--primary-color) 180deg 200deg,
+      transparent 200deg 360deg
+    );
+    opacity: 0.1;
+    animation: rotateBackground 10s linear infinite;
+  }
+  
+  @keyframes rotateBackground {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  .band-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 10px 20px rgba(0, 255, 255, 0.2);
+  }
+  
+  .band-image {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 15px rgba(255, 20, 147, 0.5);
+    transition: all 0.3s ease;
+  }
+  
+  .band-card:hover .band-image {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 0 25px rgba(255, 20, 147, 0.8);
+  }
+  
+  .band-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-size: 1.4em;
+    position: relative;
+    z-index: 1;
+  }
+   #click{
+    background: none;
+    border: none;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+    }
+  .footer {
+    background-color: rgba(10, 10, 42, 0.8);
+    text-align: center;
+    padding: 30px 20px;
+    margin-top: 60px;
+  }
+  
+  .footer p {
+    color: #888;
+    font-size: 0.9em;
+  }
+  
+  .footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .footer a:hover {
+    color: var(--secondary-color);
+  }
+  
+  @media (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .logo-container {
+      margin-bottom: 20px;
+    }
+    
+    .nav {
+      flex-wrap: wrap;
+    }
+    
+    .nav a {
+      margin: 5px 10px;
+    }
+    
+    #search-input {
+      width: 80%;
+    }
+    
+    #search-button {
+      right: 10%;
+    }
+  }
+  
+  /* Fun animations */
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-30px);}
+    60% {transform: translateY(-15px);}
+  }
+  
+  .bounce {
+    animation: bounce 2s infinite;
+  }
+  
+  @keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+  }
+  
+  .shake:hover {
+    animation: shake 0.5s;
+    animation-iteration-count: infinite;
+  }
+</style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo-container">
+      <img src="/static/logo-no-background.png" alt="Groupie-Tracker Logo" class="logo-image" width="50" height="50">
+      <div class="logo-text bounce">Groupie-Tracker</div>
+    </div>
+ 
+  </header>
+  
+  <main class="main">
+    <!-- <div class="search-container"  >
+      <form action="/artist" method="post">
+      <input type="text" id="search-input" name="artist" placeholder="Search for bands, events, or venues...">
+      <button id="search-button" type="submit" class="shake">Search</button>
+      </form>
+    </div> -->
+    
+    <section class="featured-bands">
+      {{range .}}
+      <form action="/artist" method="post" class="band-card">
+        <button id="click" type="submit">
+          <input type="hidden" name="artist" value="{{.Name}}">
+          <img src="{{.Image}}" alt="{{.Name}} image" class="band-image" width="180" height="180">
+          <h3> {{.Name}} </h3>
+        </button>
+      </form>
+      {{end}}
+    </section>
+  </main>
+  
+  <footer class="footer">
+    <p>&copy; 2024 Groupie-Tracker | Made with Go with 💖</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      const bandCards = document.querySelectorAll('.band-card');
+
+      // Add hover effect to band cards
+      bandCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          card.style.transform = 'scale(1.05) rotate(2deg)';
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'scale(1) rotate(0)';
+        });
+      });
+
+      // Add click effect to search button
+      const searchButton = document.getElementById('search-button');
+      searchButton.addEventListener('mousedown', () => {
+        searchButton.style.transform = 'translateY(-50%) scale(0.95)';
+      });
+      searchButton.addEventListener('mouseup', () => {
+        searchButton.style.transform = 'translateY(-50%) scale(1)';
+      });
+    });
+    // function post(url, value) {
+    //   const form = document.createElement('form');
+    //   form.method = 'POST';
+    //   form.action = url;
+      
+    //   const input = document.createElement('input');
+    //   input.type = 'hidden';
+    //   input.name = 'artist';
+    //   input.value = value;
+      
+    //   form.appendChild(input);
+    //   document.body.appendChild(form);
+    //   form.submit();
+    // }
+  </script>
+</body>
+</html>
