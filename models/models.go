@@ -11,6 +11,17 @@ type Artist struct {
 	Dates	string `json:"dates"`
 	Locations	string `json:"locations"`
 }
+type NewArtist struct {
+	ID           int      
+	Image        string   
+	Name         string   
+	Members      []string 
+	CreationDate int      
+	FirstAlbum   string   
+	Relations  string 
+	Dates	string 
+	Locations	[]string 
+}
 
 type WrapedLocation struct {
 	Index []Location `json:"index"`
