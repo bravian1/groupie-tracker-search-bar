@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -29,7 +30,8 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	artists, err := api.GetArtists()
+	artists, err := api.GetNewArtists()
+	fmt.Println("here now: ",artists)
 	if err != nil {
 		log.Printf("failed to fetch artist: %v", err)
 		errorMsg(w, "Internal Server Error", http.StatusInternalServerError)

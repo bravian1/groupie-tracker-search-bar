@@ -27,7 +27,38 @@ func GetArtists() ([]models.Artist, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode artist response: %v", err)
 	}
+
+	// fmt.Println("artists: ",artists)
 	return artists, nil
+}
+
+func GetNewArtists() ([]models.NewArtist, error) {
+	fmt.Println("here")
+	artists,err:=GetArtists()
+	if err!=nil{
+        return nil,err
+    }
+	var final []models.NewArtist
+	for _, artist := range artists {
+		place, err:=GetLocations(artist.Locations)
+		if err!=nil{
+			return nil,err
+		}
+		final = append(final, models.NewArtist{
+            ID:           artist.ID,
+            Image:        artist.Image,
+            Name:         artist.Name,
+            Members:      artist.Members,
+            CreationDate: artist.CreationDate,
+            FirstAlbum:   artist.FirstAlbum,
+            Relations:  artist.Relations,
+            Dates:    artist.Dates,
+            Locations:    place.Locations,
+        })
+        
+	}
+	fmt.Println("final: ",final)
+	return final, nil
 }
 
 func GetArtistByID(artistID int) (*models.Artist, error) {
