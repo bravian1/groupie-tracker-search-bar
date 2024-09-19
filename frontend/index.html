@@ -24,7 +24,7 @@
       <button id="search-button" type="submit" class="shake">Search</button>
       </form>
       <div id="suggestions-container">
-        <ul id="list"></ul>
+        <!-- <ul id="list"></ul> -->
       </div>
     </div>
     
@@ -75,7 +75,7 @@
 
 // Search functionality
 const searchInput = document.querySelector('#search-input');
-const suggestionsContainer = document.querySelector('#list');
+const suggestionsContainer = document.querySelector('#suggestions-container');
 
 searchInput.addEventListener('keyup', (e) => {
     const searchValue = e.target.value.toLowerCase().trim();
@@ -148,7 +148,7 @@ searchInput.addEventListener('keyup', (e) => {
 });
 
 function addSuggestion(text, type) {
-    const suggestionItem = document.createElement('li');
+    const suggestionItem = document.createElement('div');
     suggestionItem.textContent = text;
     suggestionItem.classList.add(type);
     suggestionsContainer.appendChild(suggestionItem);
