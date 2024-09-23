@@ -44,16 +44,34 @@ func GetNewArtists() ([]models.NewArtist, error) {
 		if err!=nil{
 			return nil,err
 		}
+		newMembers:=[]string{}
+		for i, member:= range artist.Members{
+			if i !=len(artist.Members)-1{
+
+				member+=","
+				
+			}
+			newMembers=append(newMembers, member)
+		}
+		newLocations:=[]string{}
+		for i, member:= range place.Locations{
+			if i !=len(place.Locations)-1{
+
+				member+=","
+				
+			}
+			newLocations=append(newLocations, member)
+		}
 		final = append(final, models.NewArtist{
             ID:           artist.ID,
             Image:        artist.Image,
             Name:         artist.Name,
-            Members:      artist.Members,
+            Members:      newMembers,
             CreationDate: artist.CreationDate,
             FirstAlbum:   artist.FirstAlbum,
             Relations:  artist.Relations,
             Dates:    artist.Dates,
-            Locations:    place.Locations,
+            Locations:    newLocations,
         })
         
 	}

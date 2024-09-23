@@ -21,7 +21,7 @@ func errorMsg(w http.ResponseWriter, errMsg string, statusCode int) {
 	tmpl, err := template.ParseFiles("frontend/errors.html")
 	if err != nil {
 		log.Printf("error parsing template files: %v", err)
-		http.Error(w, "Oops! Cannot load page.\nTry again latter\n", http.StatusInternalServerError)
+		http.Error(w, "Oops! Cannot load page.\nTry again later\n", http.StatusInternalServerError)
 		return
 	}
 
