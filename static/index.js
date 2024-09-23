@@ -1,0 +1,109 @@
+document.addEventListener('DOMContentLoaded', (event) => {
+    const bandCards = document.querySelectorAll('.band-card');
+
+    // Add hover effect to band cards
+    bandCards.forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        card.style.transform = 'scale(1.05) rotate(2deg)';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'scale(1) rotate(0)';
+      });
+    });
+
+    // Add click effect to search button
+    const searchButton = document.getElementById('search-button');
+    searchButton.addEventListener('mousedown', () => {
+      searchButton.style.transform = 'translateY(-50%) scale(0.95)';
+    });
+    searchButton.addEventListener('mouseup', () => {
+      searchButton.style.transform = 'translateY(-50%) scale(1)';
+    });
+  });
+
+// Search functionality
+const searchInput = document.querySelector('#search-input');
+const suggestionsContainer = document.querySelector('#suggestions-container');
+
+searchInput.addEventListener('keyup', (e) => {
+  const searchValue = e.target.value.toLowerCase().trim();
+  suggestionsContainer.innerHTML = ''; // Clear previous suggestions
+
+  if (searchValue === '') {
+      return; // Exit if search input is empty
+  }
+
+  const bandCards = document.querySelectorAll('.featured-bands .band-card');
+  bandCards.forEach(card => {
+      card.style.display = 'none'; // Hide all cards initially
+      let isMatch = false;
+
+      // Search by name
+      const bandName = card.querySelector('h3').textContent.trim().toLowerCase();
+      if (bandName.includes(searchValue)) {
+          addSuggestion(bandName);
+          isMatch = true;
+      }
+
+      // Search by members
+      const membersStr = card.getAttribute('data-members');
+    //   console.log(membersStr);
+      if (membersStr) {
+          const members = membersStr.split(',').map(m => m.trim());
+        //   console.log(members)
+          const matchingMembers = members.filter(member => 
+              member.toLowerCase().includes(searchValue)
+          );
+
+          if (matchingMembers.length > 0) {
+            console.log(matchingMembers)
+              matchingMembers.forEach(member => {
+                member = member.replace(/[\[\]]/g, "");
+                  addSuggestion(`${member} - member`);
+              });
+              isMatch = true;
+          }
+      }
+
+      // Search by creation date
+      const creationDate = card.getAttribute('data-creation-date');
+      if (creationDate && creationDate.includes(searchValue)) {
+          addSuggestion(`${bandName} - Created in ${creationDate}`);
+          isMatch = true;
+      }
+
+      // Search by first album
+      const firstAlbum = card.getAttribute('data-first-album');
+      if (firstAlbum && firstAlbum.toLowerCase().includes(searchValue)) {
+          addSuggestion(`${bandName} - First album: ${firstAlbum}`);
+          isMatch = true;
+      }
+
+      // Search by locations
+      const locationsStr = card.getAttribute('data-locations');
+      if (locationsStr) {
+          const locations = locationsStr.split(',').map(l => l.trim());
+          const matchingLocations = locations.filter(location => 
+              location.toLowerCase().includes(searchValue)
+          );
+          if (matchingLocations.length > 0) {
+              matchingLocations.forEach(location => {
+                location = location.replace(/[\[\]]/g, "");
+                  addSuggestion(`${bandName} - ${location}`);
+              });
+              isMatch = true;
+          }
+      }
+
+      if (isMatch) {
+          card.style.display = 'block';
+      }
+  });
+});
+
+function addSuggestion(text) {
+  const suggestionItem = document.createElement('div');
+  suggestionItem.textContent = text;
+  suggestionItem.classList.add("sugestion-item");
+  suggestionsContainer.appendChild(suggestionItem);
+}
