@@ -12,7 +12,7 @@ var Port = ":8000"
 
 func main() {
 	http.HandleFunc("/", routes.ArtistHandler)
-	http.HandleFunc("/artist", routes.ProfileHandler)
+	http.HandleFunc("/artist/", routes.ProfileHandler)
 	http.HandleFunc("/static/", routes.Static)
 
 	fmt.Printf("Server started on http://localhost%s\n", Port)
