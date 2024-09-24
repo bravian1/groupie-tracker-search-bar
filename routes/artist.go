@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -25,7 +26,6 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tmpl, err := template.ParseFiles("frontend/index.html")
-
 	if err != nil {
 		log.Printf("failed to parse template: %v\n", err)
 		errorMsg(w, "Internal Server Error", http.StatusInternalServerError)
@@ -33,7 +33,6 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	artists, err := api.GetNewArtists()
-
 	if err != nil {
 		log.Printf("failed to fetch artist: %v\n", err)
 		errorMsg(w, "Internal Server Error", http.StatusInternalServerError)
@@ -45,7 +44,6 @@ func ArtistHandler(w http.ResponseWriter, r *http.Request) {
 
 func getArtistbyName(name string) (models.Artist, map[string][]string) {
 	artists, err := api.GetArtists()
-
 	if err != nil {
 		log.Printf("failed to fetch artist: %v", err)
 		return models.Artist{}, make(map[string][]string)
@@ -69,10 +67,10 @@ func getArtistbyName(name string) (models.Artist, map[string][]string) {
 }
 
 func ProfileHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		errorMsg(w, "Invalid method", http.StatusMethodNotAllowed)
-		return
-	}
+	// if r.Method != http.MethodPost {
+	// 	errorMsg(w, "Invalid method", http.StatusMethodNotAllowed)
+	// 	return
+	// }
 
 	t, err := template.ParseFiles("frontend/profile.html")
 	if err != nil {
@@ -80,13 +78,13 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		errorMsg(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-
+	fmt.Println(r.URL.Path)
 	templ := template.Must(t, err)
-	name := r.FormValue("artist")
+	name := strings.Split(r.URL.Path, "/")[2]
+	fmt.Println(name)
 	artist, relations := getArtistbyName(name)
 
 	locations, err := api.GetLocations(artist.Locations)
-
 	if err != nil {
 		log.Printf("failed to fetch locations: %v", err)
 		errorMsg(w, "Internal Server Error", http.StatusInternalServerError)
