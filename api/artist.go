@@ -33,7 +33,7 @@ func GetArtists() ([]models.Artist, error) {
 }
 
 func GetNewArtists() ([]models.NewArtist, error) {
-	fmt.Println("here")
+	
 	artists,err:=GetArtists()
 	if err!=nil{
         return nil,err
@@ -75,7 +75,6 @@ func GetNewArtists() ([]models.NewArtist, error) {
         })
         
 	}
-	fmt.Println("final: ",final)
 	return final, nil
 }
 
