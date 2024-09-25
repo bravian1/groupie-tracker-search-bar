@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Add hover effect to band cards
     bandCards.forEach(card => {
       card.addEventListener('mouseenter', () => {
-        card.style.transform = 'scale(1.05) rotate(2deg)';
+        card.style.transform = 'scale(1.05) rotate(1.5deg)';
       });
       card.addEventListener('mouseleave', () => {
         card.style.transform = 'scale(1) rotate(0)';
@@ -19,17 +19,23 @@ document.addEventListener('DOMContentLoaded', (event) => {
     searchButton.addEventListener('mouseup', () => {
       searchButton.style.transform = 'translateY(-50%) scale(1)';
     });
+    // searchButton.addEventListener('click', ()=>{
+    //   //send post request to search with the bandname as the value
+// to be implemented
+
+    // })
   });
 
 // Search functionality
 const searchInput = document.querySelector('#search-input');
 const suggestionsContainer = document.querySelector('#suggestions-container');
 
-searchInput.addEventListener('keyup', (e) => {
-  const searchValue = e.target.value.toLowerCase().trim();
+searchInput.addEventListener('keyup', performSearch)
+  function performSearch(){
+  const searchValue = searchInput.value.toLowerCase().trim();
   suggestionsContainer.innerHTML = ''; // Clear previous suggestions
 
-  if (searchValue === '') {
+  if (searchValue === '' && searchValue.length < 2) {
       return; // Exit if search input is empty
   }
 
@@ -41,7 +47,7 @@ searchInput.addEventListener('keyup', (e) => {
       // Search by name
       const bandName = card.querySelector('h3').textContent.trim().toLowerCase();
       if (bandName.includes(searchValue)) {
-          addSuggestion(bandName);
+          addSuggestion(bandName, bandName);
           isMatch = true;
       }
 
@@ -59,7 +65,7 @@ searchInput.addEventListener('keyup', (e) => {
             console.log(matchingMembers)
               matchingMembers.forEach(member => {
                 member = member.replace(/[\[\]]/g, "");
-                  addSuggestion(`${member} - member`);
+                  addSuggestion(`${member} - member`, member);
               });
               isMatch = true;
           }
@@ -68,14 +74,14 @@ searchInput.addEventListener('keyup', (e) => {
       // Search by creation date
       const creationDate = card.getAttribute('data-creation-date');
       if (creationDate && creationDate.includes(searchValue)) {
-          addSuggestion(`${bandName} - Created in ${creationDate}`);
+          addSuggestion(`Created in ${creationDate} - ${bandName}`, creationDate);
           isMatch = true;
       }
 
       // Search by first album
       const firstAlbum = card.getAttribute('data-first-album');
       if (firstAlbum && firstAlbum.toLowerCase().includes(searchValue)) {
-          addSuggestion(`${bandName} - First album: ${firstAlbum}`);
+          addSuggestion(`First album: ${firstAlbum} - ${bandName}`, firstAlbum);
           isMatch = true;
       }
 
@@ -89,7 +95,7 @@ searchInput.addEventListener('keyup', (e) => {
           if (matchingLocations.length > 0) {
               matchingLocations.forEach(location => {
                 location = location.replace(/[\[\]]/g, "");
-                  addSuggestion(`${bandName} - ${location}`);
+                  addSuggestion(`${bandName} - ${location}`, location);
               });
               isMatch = true;
           }
@@ -99,11 +105,16 @@ searchInput.addEventListener('keyup', (e) => {
           card.style.display = 'block';
       }
   });
-});
+};
 
-function addSuggestion(text) {
+function addSuggestion(text, value) {
   const suggestionItem = document.createElement('div');
   suggestionItem.textContent = text;
-  suggestionItem.classList.add("sugestion-item");
+  suggestionItem.classList.add("suggestion-item");
+  suggestionItem.addEventListener('click', function() {
+    searchInput.value = value;
+    suggestionsContainer.innerHTML = '';
+    performSearch();
+});
   suggestionsContainer.appendChild(suggestionItem);
 }
