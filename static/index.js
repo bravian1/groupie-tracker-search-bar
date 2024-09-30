@@ -19,9 +19,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     searchButton.addEventListener('mouseup', () => {
       searchButton.style.transform = 'translateY(-50%) scale(1)';
     });
+    //send post request to search with the bandname as the value to be implemented
     // searchButton.addEventListener('click', ()=>{
-    //   //send post request to search with the bandname as the value
-// to be implemented
 
     // })
   });
@@ -47,7 +46,7 @@ searchInput.addEventListener('keyup', performSearch)
       // Search by name
       const bandName = card.querySelector('h3').textContent.trim().toLowerCase();
       if (bandName.includes(searchValue)) {
-          addSuggestion(bandName, bandName);
+          addSuggestion(`${bandName} - artist/band`, bandName);
           isMatch = true;
       }
 
@@ -102,7 +101,9 @@ searchInput.addEventListener('keyup', performSearch)
       }
 
       if (isMatch) {
-          card.style.display = 'block';
+        card.style.maxWidth = '100px';
+
+        card.style.display = 'block';
       }
   });
 };
