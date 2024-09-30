@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"unicode"
 
 	"github.com/denilany/Groupie-Tracker/api"
 
@@ -102,7 +103,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	for key, val := range relations {
 		temp := strings.Replace(key, "-", ", ", -1)
 		temp = strings.Replace(temp, "_", " ", -1)
-		temp = strings.Title(temp)
+		temp = capitalize(temp)
 		concert[temp] = val
 	}
 
@@ -129,4 +130,13 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	templ.Execute(w, final)
+}
+
+func capitalize(s string) string {
+	words := strings.Fields(s)
+	for i, word := range words {
+		// Capitalize the first letter and concatenate it with the rest of the lowercase word
+		words[i] = string(unicode.ToUpper(rune(word[0]))) + strings.ToLower(word[1:])
+	}
+	return strings.Join(words, " ")
 }

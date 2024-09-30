@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Groupie-Tracker: Your Live Music Experience</title>
-  <link rel="icon" href="/static/groupie-tracker-favicon-color.png" type="image/x-icon">
-  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groupie-Tracker: Your Live Music Experience</title>
+    <link rel="icon" href="/static/groupie-tracker-favicon-color.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
   </head>
   <body>
     <header class="header">
@@ -20,8 +20,7 @@
     <main class="main">
       <div class="search-container"  >
         <form action="/artist" method="post">
-        <input type="text" id="search-input" name="artist" placeholder="Search for bands, events, or venues...">
-        <button id="search-button" type="submit" class="shake">Search</button>
+        <input type="text" id="search-input" name="artist" placeholder="Search for bands, members, locations...">
         </form>
         <div id="suggestions-container">
           
@@ -36,7 +35,6 @@
             data-first-album="{{.FirstAlbum}}"
             data-locations="{{.Locations}}">
             <button id="click" type="submit">
-                <!-- <input type="hidden" name="artist" value="{{.Name}}"> -->
                 <img src="{{.Image}}" alt="{{.Name}} image" class="band-image" width="180" height="180">
                 <h3>{{.Name}}</h3>
             </button>
