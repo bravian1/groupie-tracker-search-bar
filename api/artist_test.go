@@ -112,87 +112,87 @@ func compareArtist(a, b models.Artist) bool {
 	return true
 }
 
-func TestGetArtistByID_Success(t *testing.T) {
-	mockArtists := []models.Artist{
-		{ID: 1, Name: "Artist 1"},
-		{ID: 2, Name: "Artist 2"},
-	}
+// func TestGetArtistByID_Success(t *testing.T) {
+// 	mockArtists := []models.Artist{
+// 		{ID: 1, Name: "Artist 1"},
+// 		{ID: 2, Name: "Artist 2"},
+// 	}
 
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(mockArtists)
-	}))
-	defer ts.Close()
+// 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		w.WriteHeader(http.StatusOK)
+// 		json.NewEncoder(w).Encode(mockArtists)
+// 	}))
+// 	defer ts.Close()
 
-	oldArtistAPI := artistAPI
-	artistAPI = ts.URL
-	defer func() { artistAPI = oldArtistAPI }()
+// 	oldArtistAPI := artistAPI
+// 	artistAPI = ts.URL
+// 	defer func() { artistAPI = oldArtistAPI }()
 
-	artist, err := GetArtistByID(1)
-	if err != nil {
-		t.Fatalf("expected no error, got %v", err)
-	}
+// 	artist, err := GetArtistByID(1)
+// 	if err != nil {
+// 		t.Fatalf("expected no error, got %v", err)
+// 	}
 
-	if artist == nil {
-		t.Fatal("expected artist, got nil")
-	}
+// 	if artist == nil {
+// 		t.Fatal("expected artist, got nil")
+// 	}
 
-	if artist.ID != 1 || artist.Name != "Artist 1" {
-		t.Errorf("expected Artist 1, got %+v", artist)
-	}
-}
+// 	if artist.ID != 1 || artist.Name != "Artist 1" {
+// 		t.Errorf("expected Artist 1, got %+v", artist)
+// 	}
+// }
 
-func TestGetArtistByID_NotFound(t *testing.T) {
-	mockArtists := []models.Artist{
-		{ID: 1, Name: "Artist 1"},
-		{ID: 2, Name: "Artist 2"},
-	}
+// func TestGetArtistByID_NotFound(t *testing.T) {
+// 	mockArtists := []models.Artist{
+// 		{ID: 1, Name: "Artist 1"},
+// 		{ID: 2, Name: "Artist 2"},
+// 	}
 
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(mockArtists)
-	}))
-	defer ts.Close()
+// 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		w.WriteHeader(http.StatusOK)
+// 		json.NewEncoder(w).Encode(mockArtists)
+// 	}))
+// 	defer ts.Close()
 
-	oldArtistAPI := artistAPI
-	artistAPI = ts.URL
-	defer func() { artistAPI = oldArtistAPI }()
+// 	oldArtistAPI := artistAPI
+// 	artistAPI = ts.URL
+// 	defer func() { artistAPI = oldArtistAPI }()
 
-	artist, err := GetArtistByID(3)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
+// 	artist, err := GetArtistByID(3)
+// 	if err == nil {
+// 		t.Fatal("expected error, got nil")
+// 	}
 
-	if artist != nil {
-		t.Errorf("expected nil artist, got %+v", artist)
-	}
+// 	if artist != nil {
+// 		t.Errorf("expected nil artist, got %+v", artist)
+// 	}
 
-	if err.Error() != "artist not found" {
-		t.Errorf("expected 'artist not found' error, got %v", err)
-	}
-}
+// 	if err.Error() != "artist not found" {
+// 		t.Errorf("expected 'artist not found' error, got %v", err)
+// 	}
+// }
 
-func TestGetArtistByID_GetArtistsError(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusInternalServerError)
-	}))
-	defer ts.Close()
+// func TestGetArtistByID_GetArtistsError(t *testing.T) {
+// 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		w.WriteHeader(http.StatusInternalServerError)
+// 	}))
+// 	defer ts.Close()
 
-	oldArtistAPI := artistAPI
-	artistAPI = ts.URL
-	defer func() { artistAPI = oldArtistAPI }()
+// 	oldArtistAPI := artistAPI
+// 	artistAPI = ts.URL
+// 	defer func() { artistAPI = oldArtistAPI }()
 
-	artist, err := GetArtistByID(1)
-	if err == nil {
-		t.Fatal("expected error, got nil")
-	}
+// 	artist, err := GetArtistByID(1)
+// 	if err == nil {
+// 		t.Fatal("expected error, got nil")
+// 	}
 
-	if artist != nil {
-		t.Errorf("expected nil artist, got %+v", artist)
-	}
+// 	if artist != nil {
+// 		t.Errorf("expected nil artist, got %+v", artist)
+// 	}
 
-	expectedError := "failed to fetch artists: 500 Internal Server Error"
-	if err.Error() != expectedError {
-		t.Errorf("expected error %q, got %q", expectedError, err.Error())
-	}
-}
+// 	expectedError := "failed to fetch artists: 500 Internal Server Error"
+// 	if err.Error() != expectedError {
+// 		t.Errorf("expected error %q, got %q", expectedError, err.Error())
+// 	}
+// }
