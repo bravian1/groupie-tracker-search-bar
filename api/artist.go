@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -28,66 +27,65 @@ func GetArtists() ([]models.Artist, error) {
 		return nil, fmt.Errorf("failed to decode artist response: %v", err)
 	}
 
-	// fmt.Println("artists: ",artists)
 	return artists, nil
 }
 
 func GetNewArtists() ([]models.NewArtist, error) {
-	
-	artists,err:=GetArtists()
-	if err!=nil{
-        return nil,err
-    }
-	var final []models.NewArtist
-	for _, artist := range artists {
-		place, err:=GetLocations(artist.Locations)
-		if err!=nil{
-			return nil,err
-		}
-		newMembers:=[]string{}
-		for i, member:= range artist.Members{
-			if i !=len(artist.Members)-1{
 
-				member+=","
-				
-			}
-			newMembers=append(newMembers, member)
-		}
-		newLocations:=[]string{}
-		for i, member:= range place.Locations{
-			if i !=len(place.Locations)-1{
-
-				member+=","
-				
-			}
-			newLocations=append(newLocations, member)
-		}
-		final = append(final, models.NewArtist{
-            ID:           artist.ID,
-            Image:        artist.Image,
-            Name:         artist.Name,
-            Members:      newMembers,
-            CreationDate: artist.CreationDate,
-            FirstAlbum:   artist.FirstAlbum,
-            Relations:  artist.Relations,
-            Dates:    artist.Dates,
-            Locations:    newLocations,
-        })
-        
-	}
-	return final, nil
-}
-
-func GetArtistByID(artistID int) (*models.Artist, error) {
 	artists, err := GetArtists()
 	if err != nil {
 		return nil, err
 	}
-
+	var final []models.NewArtist
 	for _, artist := range artists {
-		if artist.ID == artistID {
-			return &artist, nil
+		place, err := GetLocations(artist.Locations)
+		if err != nil {
+			return nil, err
 		}
+		newMembers := []string{}
+		for i, member := range artist.Members {
+			if i != len(artist.Members)-1 {
+
+				member += ","
+
+			}
+			newMembers = append(newMembers, member)
+		}
+		newLocations := []string{}
+		for i, member := range place.Locations {
+			if i != len(place.Locations)-1 {
+
+				member += ","
+
+			}
+			newLocations = append(newLocations, member)
+		}
+		final = append(final, models.NewArtist{
+			ID:           artist.ID,
+			Image:        artist.Image,
+			Name:         artist.Name,
+			Members:      newMembers,
+			CreationDate: artist.CreationDate,
+			FirstAlbum:   artist.FirstAlbum,
+			Relations:    artist.Relations,
+			Dates:        artist.Dates,
+			Locations:    newLocations,
+		})
+
 	}
-	return nil, errors.New("artist not found")
+	return final, nil
 }
+
+// func GetArtistByID(artistID int) (*models.Artist, error) {
+// 	artists, err := GetArtists()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	for _, artist := range artists {
+// 		if artist.ID == artistID {
+// 			return &artist, nil
+// 		}
+// 	}
+// 	return nil, errors.New("artist not found")
+// }
