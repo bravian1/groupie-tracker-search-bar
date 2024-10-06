@@ -68,11 +68,6 @@ func getArtistbyName(name string) (models.Artist, map[string][]string) {
 }
 
 func ProfileHandler(w http.ResponseWriter, r *http.Request) {
-	// if r.Method != http.MethodPost {
-	// 	errorMsg(w, "Invalid method", http.StatusMethodNotAllowed)
-	// 	return
-	// }
-
 	t, err := template.ParseFiles("frontend/profile.html")
 	if err != nil {
 		log.Printf("failed to parse template: %v", err)
@@ -135,7 +130,6 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 func capitalize(s string) string {
 	words := strings.Fields(s)
 	for i, word := range words {
-		// Capitalize the first letter and concatenate it with the rest of the lowercase word
 		words[i] = string(unicode.ToUpper(rune(word[0]))) + strings.ToLower(word[1:])
 	}
 	return strings.Join(words, " ")
