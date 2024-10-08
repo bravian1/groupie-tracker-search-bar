@@ -68,10 +68,10 @@ func getArtistbyName(name string) (models.Artist, map[string][]string) {
 }
 
 func ProfileHandler(w http.ResponseWriter, r *http.Request) {
-	// if r.Method != http.MethodPost {
-	// 	errorMsg(w, "Invalid method", http.StatusMethodNotAllowed)
-	// 	return
-	// }
+	if r.Method != http.MethodPost {
+		errorMsg(w, "Invalid method", http.StatusMethodNotAllowed)
+		return
+	}
 
 	t, err := template.ParseFiles("frontend/profile.html")
 	if err != nil {
@@ -79,7 +79,6 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		errorMsg(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-	fmt.Println(r.URL.Path)
 	templ := template.Must(t, err)
 	name := strings.Split(r.URL.Path, "/")[2]
 	fmt.Println(name)
