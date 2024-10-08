@@ -101,9 +101,7 @@ searchInput.addEventListener('keyup', performSearch)
       }
 
       if (isMatch) {
-        card.style.maxWidth = '100px';
-
-        card.style.display = 'block';
+             card.style.display = 'block';
       }
   });
 };
