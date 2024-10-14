@@ -14,6 +14,7 @@ func main() {
 	http.HandleFunc("/", routes.ArtistHandler)
 	http.HandleFunc("/artist/", routes.ProfileHandler)
 	http.HandleFunc("/static/", routes.Static)
+	http.HandleFunc("/search", routes.SearchHandler)
 
 	fmt.Printf("Server started on http://localhost%s\n", Port)
 	err := http.ListenAndServe(Port, nil)
