@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -33,6 +32,7 @@ func errorMsg(w http.ResponseWriter, errMsg string, statusCode int) {
 	tmpl.Execute(w, data)
 }
 
+// Static handles requests for static files
 func Static(w http.ResponseWriter, r *http.Request) {
 	url := r.URL.Path
 
@@ -42,7 +42,6 @@ func Static(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("Is a directory?", info.IsDir())
 	if info.IsDir() {
 		errorMsg(w, "Forbidden", http.StatusForbidden)
 		return

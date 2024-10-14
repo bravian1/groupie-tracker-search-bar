@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"fmt"
+	
 	"html/template"
 	"log"
 	"net/http"
@@ -74,10 +74,9 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		errorMsg(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-	fmt.Println(r.URL.Path)
+	
 	templ := template.Must(t, err)
 	name := strings.Split(r.URL.Path, "/")[2]
-	fmt.Println(name)
 	artist, relations := getArtistbyName(name)
 
 	locations, err := api.GetLocations(artist.Locations)
