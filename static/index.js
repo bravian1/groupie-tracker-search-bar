@@ -31,14 +31,17 @@ const suggestionsContainer = document.querySelector('#suggestions-container');
 
 searchInput.addEventListener('keyup', performSearch)
   function performSearch(){
+    const bandCards = document.querySelectorAll('.featured-bands .band-card');
   const searchValue = searchInput.value.toLowerCase().trim();
   suggestionsContainer.innerHTML = ''; // Clear previous suggestions
 
   if (searchValue === '' && searchValue.length < 2) {
+   
+    // bandCards.forEach(card => {
+    //   card.style.display = 'block';})
       return; // Exit if search input is empty
   }
 
-  const bandCards = document.querySelectorAll('.featured-bands .band-card');
   bandCards.forEach(card => {
       card.style.display = 'none'; // Hide all cards initially
       let isMatch = false;
@@ -101,8 +104,6 @@ searchInput.addEventListener('keyup', performSearch)
       }
 
       if (isMatch) {
-        card.style.maxWidth = '100px';
-
         card.style.display = 'block';
       }
   });
@@ -119,3 +120,12 @@ function addSuggestion(text, value) {
 });
   suggestionsContainer.appendChild(suggestionItem);
 }
+
+//add event listener such that on clearing search input the page is reloaded
+searchInput.addEventListener('input', function() {
+  if (searchInput.value.trim() === '') {
+    window.location.reload(); 
+    console.log('input cleared');
+  }
+});
+ 
