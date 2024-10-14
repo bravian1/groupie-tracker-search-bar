@@ -1,7 +1,7 @@
 package routes
 
 import (
-	
+	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
@@ -74,7 +74,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		errorMsg(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-	
+
 	templ := template.Must(t, err)
 	name := strings.Split(r.URL.Path, "/")[2]
 	artist, relations := getArtistbyName(name)
@@ -132,4 +132,58 @@ func capitalize(s string) string {
 		words[i] = string(unicode.ToUpper(rune(word[0]))) + strings.ToLower(word[1:])
 	}
 	return strings.Join(words, " ")
+}
+
+func SearchHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	query := strings.ToLower(r.URL.Query().Get("q"))
+	if query == "" {
+		http.Error(w, "Query parameter 'q' is required", http.StatusBadRequest)
+		return
+	}
+
+	artists, err := api.GetArtists()
+	if err != nil {
+		log.Printf("failed to fetch artists: %v\n", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	results := searchArtists(artists, query)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(results)
+}
+
+func searchArtists(artists []models.Artist, query string) []models.Artist {
+	var results []models.Artist
+
+	for _, artist := range artists {
+		if strings.Contains(strings.ToLower(artist.Name), query) {
+			results = append(results, artist)
+		}
+
+		if containsAny(artist.Members, query) {
+			results = append(results, artist)
+		}
+
+		if strings.Contains(strings.ToLower(artist.FirstAlbum), query) {
+			results = append(results, artist)
+		}
+	}
+
+	return results
+}
+
+func containsAny(slice []string, query string) bool {
+	for _, item := range slice {
+		if strings.Contains(strings.ToLower(item), query) {
+			return true
+		}
+	}
+	return false
 }
