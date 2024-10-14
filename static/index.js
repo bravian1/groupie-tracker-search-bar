@@ -1,124 +1,75 @@
 document.addEventListener('DOMContentLoaded', (event) => {
-    const bandCards = document.querySelectorAll('.band-card');
+  const bandCards = document.querySelectorAll('.band-card');
+  const searchInput = document.querySelector('#search-input');
+  const suggestionsContainer = document.querySelector('#suggestions-container');
+  // const featuredBands = document.querySelector('.featured-bands');
 
-    // Add hover effect to band cards
-    bandCards.forEach(card => {
-      card.addEventListener('mouseenter', () => {
-        card.style.transform = 'scale(1.05) rotate(1.5deg)';
-      });
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'scale(1) rotate(0)';
-      });
+  // Add hover effect to band cards
+  bandCards.forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      card.style.transform = 'scale(1.05) rotate(1.5deg)';
     });
-
-    // Add click effect to search button
-    const searchButton = document.getElementById('search-button');
-    searchButton.addEventListener('mousedown', () => {
-      searchButton.style.transform = 'translateY(-50%) scale(0.95)';
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'scale(1) rotate(0)';
     });
-    searchButton.addEventListener('mouseup', () => {
-      searchButton.style.transform = 'translateY(-50%) scale(1)';
-    });
-    //send post request to search with the bandname as the value to be implemented
-    // searchButton.addEventListener('click', ()=>{
-
   });
 
-// Search functionality
-const searchInput = document.querySelector('#search-input');
-const suggestionsContainer = document.querySelector('#suggestions-container');
+  // Update the search functionality
+  searchInput.addEventListener('keydown', debounce(performSearch, 300));
 
-searchInput.addEventListener('keyup', performSearch)
-  function performSearch(){
-    const bandCards = document.querySelectorAll('.featured-bands .band-card');
-  const searchValue = searchInput.value.toLowerCase().trim();
-  suggestionsContainer.innerHTML = ''; // Clear previous suggestions
+  async function performSearch() {
+      const searchValue = searchInput.value.trim();
+      suggestionsContainer.innerHTML = '';
 
-  if (searchValue === '' && searchValue.length < 2) {
-   
-    bandCards.forEach(card => {
-      card.style.display = 'block';
-    })
-    return; // Exit if search input is empty
+      if (searchValue === '') {
+          bandCards.forEach(card => card.style.display = 'block');
+          return;
+      }
+
+      try {
+          const response = await fetch(`/search?q=${encodeURIComponent(searchValue)}`);
+          if (!response.ok) throw new Error('Search request failed');
+          const results = await response.json();
+          
+          displayResults(results);
+      } catch (error) {
+          console.error('Error during search:', error);
+      }
   }
 
-  bandCards.forEach(card => {
-      card.style.display = 'none'; // Hide all cards initially
-      let isMatch = false;
-
-      // Search by name
-      const bandName = card.querySelector('h3').textContent.trim().toLowerCase();
-      if (bandName.includes(searchValue)) {
-          addSuggestion(`${bandName} - artist/band`, bandName);
-          isMatch = true;
-      }
-
-      // Search by members
-      const membersStr = card.getAttribute('data-members');
-    //   console.log(membersStr);
-      if (membersStr) {
-          const members = membersStr.split(',').map(m => m.trim());
-        //   console.log(members)
-          const matchingMembers = members.filter(member => 
-              member.toLowerCase().includes(searchValue)
-          );
-
-          if (matchingMembers.length > 0) {
-            console.log(matchingMembers)
-              matchingMembers.forEach(member => {
-                member = member.replace(/[\[\]]/g, "");
-                  addSuggestion(`${member} - member`, member);
-              });
-              isMatch = true;
+  function displayResults(results) {
+      bandCards.forEach(card => {
+          const artistName = card.querySelector('h3').textContent.trim();
+          if (results.some(artist => artist.Name === artistName)) {
+              card.style.display = 'block';
+              addSuggestion(`${artistName} - artist/band`, artistName);
+          } else {
+              card.style.display = 'none';
           }
-      }
+      });
 
-      // Search by creation date
-      const creationDate = card.getAttribute('data-creation-date');
-      if (creationDate && creationDate.includes(searchValue)) {
-          addSuggestion(`Created in ${creationDate} - ${bandName}`, creationDate);
-          isMatch = true;
+      if (results.length === 0) {
+          suggestionsContainer.innerHTML = '<div class="suggestion-item">No results found.</div>';
       }
+  }
 
-      // Search by first album
-      const firstAlbum = card.getAttribute('data-first-album');
-      if (firstAlbum && firstAlbum.toLowerCase().includes(searchValue)) {
-          addSuggestion(`First album: ${firstAlbum} - ${bandName}`, firstAlbum);
-          isMatch = true;
-      }
+  function addSuggestion(text, value) {
+      const suggestionItem = document.createElement('div');
+      suggestionItem.textContent = text;
+      suggestionItem.classList.add("suggestion-item");
+      suggestionItem.addEventListener('click', function() {
+          searchInput.value = value;
+          suggestionsContainer.innerHTML = '';
+          performSearch();
+      });
+      suggestionsContainer.appendChild(suggestionItem);
+  }
 
-      // Search by locations
-      const locationsStr = card.getAttribute('data-locations');
-      if (locationsStr) {
-          const locations = locationsStr.split(',').map(l => l.trim());
-          const matchingLocations = locations.filter(location => 
-              location.toLowerCase().includes(searchValue)
-          );
-          if (matchingLocations.length > 0) {
-              matchingLocations.forEach(location => {
-                location = location.replace(/[\[\]]/g, "");
-                  addSuggestion(`${bandName} - ${location}`, location);
-              });
-              isMatch = true;
-          }
-      }
-
-      if (isMatch) {
-        card.style.display = 'block';
-      }
-  });
-};
-
-function addSuggestion(text, value) {
-  const suggestionItem = document.createElement('div');
-  suggestionItem.textContent = text;
-  suggestionItem.classList.add("suggestion-item");
-  suggestionItem.addEventListener('click', function() {
-    searchInput.value = value;
-    suggestionsContainer.innerHTML = '';
-    performSearch();
+  function debounce(func, delay) {
+      let timeoutId;
+      return function (...args) {
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(() => func.apply(this, args), delay);
+      };
+  }
 });
-  suggestionsContainer.appendChild(suggestionItem);
-}
-
- 
