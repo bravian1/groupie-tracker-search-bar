@@ -76,16 +76,3 @@ func GetNewArtists() ([]models.NewArtist, error) {
 	return final, nil
 }
 
-// func GetArtistByID(artistID int) (*models.Artist, error) {
-// 	artists, err := GetArtists()
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	for _, artist := range artists {
-// 		if artist.ID == artistID {
-// 			return &artist, nil
-// 		}
-// 	}
-// 	return nil, errors.New("artist not found")
-// }
