@@ -19,10 +19,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     searchButton.addEventListener('mouseup', () => {
       searchButton.style.transform = 'translateY(-50%) scale(1)';
     });
-    //send post request to search with the bandname as the value to be implemented
-    // searchButton.addEventListener('click', ()=>{
-
-    // })
   });
 
 // Search functionality
@@ -37,8 +33,9 @@ searchInput.addEventListener('keyup', performSearch)
 
   if (searchValue === '' && searchValue.length < 2) {
    
-    // bandCards.forEach(card => {
-    //   card.style.display = 'block';})
+    bandCards.forEach(card => {
+      card.style.display = 'block';
+    })
       return; // Exit if search input is empty
   }
 
@@ -120,12 +117,3 @@ function addSuggestion(text, value) {
 });
   suggestionsContainer.appendChild(suggestionItem);
 }
-
-//add event listener such that on clearing search input the page is reloaded
-searchInput.addEventListener('input', function() {
-  if (searchInput.value.trim() === '') {
-    window.location.reload(); 
-    console.log('input cleared');
-  }
-});
- 
